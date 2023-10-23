@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import Header from "./components/Header/Header.component";
-import Form from "./components/UserInput/UserInput.component";
 import UserInput from "./components/UserInput/UserInput.component";
 import ResultsTable from "./components/ResultsTable/ResultsTable.component";
 
@@ -12,12 +11,12 @@ const App = () => {
     expectedReturn,
     duration,
   }) => {
-    const yearlyData = []; // per-year results
-
     let calculatedCurrentSavings = +currentSavings;
     const calculatedYearlyContribution = +yearlyContribution;
     const calculatedExpectedReturn = +expectedReturn / 100;
     const calculatedDuration = +duration;
+
+    const yearlyData = [];
 
     for (let i = 0; i < calculatedDuration; i++) {
       const yearlyInterest =
@@ -27,7 +26,7 @@ const App = () => {
         year: i + 1,
         yearlyInterest: yearlyInterest,
         savingsEndOfYear: calculatedCurrentSavings,
-        yearlyContribution: calculatedYearlyContribution,
+        calculatedYearlyContribution: calculatedYearlyContribution,
       });
     }
 
@@ -38,8 +37,22 @@ const App = () => {
     <div>
       <Header />
       <UserInput onCalculate={calculateHandler} />
-      <ResultsTable />
+
+      {!results && (
+        <p style={{ textAlign: "center" }}>No Investment calculated yet.</p>
+      )}
+      {results && (
+        <ResultsTable
+          data={results}
+          initialInvestment={
+            results[0].savingsEndOfYear -
+            results[0].yearlyInterest -
+            results[0].calculatedYearlyContribution
+          }
+        />
+      )}
     </div>
   );
 };
+
 export default App;
